@@ -1,3 +1,3 @@
-# Dự án làm Ứng dụng đọc báo.
+# Dự án làm game Tetris.
 
 yêu cầu về dự án
