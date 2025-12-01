@@ -27,12 +27,12 @@ public class Mino_L2 extends Mino{
     }
 
 
-    public void getDirection1(){ // hướng mặc định
+    public void getDirection1(){ // default direction
 
         //     o
         //     o
         //  o  o
-        // sử dụng 4 blocks
+        // use 4 blocks
 
         tempB[0].x= b[0].x;
         tempB[0].y= b[0].y;

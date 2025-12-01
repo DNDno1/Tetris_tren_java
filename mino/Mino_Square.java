@@ -26,7 +26,7 @@ public class Mino_Square extends Mino{
 
     }
 
-    // Hình vuông đơn giản vì chúng không thể xoay
+    // square is simple because we cannot rotate it!
 
     public void getDirection1(){
     }public void getDirection2(){

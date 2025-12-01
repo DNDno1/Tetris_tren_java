@@ -17,9 +17,12 @@ public class Mino {
     boolean leftCollision,rightCollision,bottomCollision;
     public boolean active = true;
 
-    // các biến để tạo khoảng cách thời gian giữa mino mới và mino cũ
+    // variables to create time gap b/w last and  new mino
     public boolean deactivating;
     int deactivateCounter =0;
+
+
+
 
 
     public void create(Color c){
@@ -46,8 +49,8 @@ public class Mino {
         if (leftCollision == false && rightCollision == false && bottomCollision == false){
          this.direction=direction;
 
-         // lưu trữ vị trí ban đầu nếu va chạm xảy ra và ta cần hủy bỏ trạng thái để reset
-        // sử dụng mảng temp để lưu trữ
+         // to store the orignal positon if collsion happens and we need to cancel
+        // that why used temp array to store
          b[0].x = tempB[0].x;
          b[0].y = tempB[0].y;
          b[1].x = tempB[1].x;
@@ -73,10 +76,11 @@ public class Mino {
             rightCollision =false;
             bottomCollision =false;
 
-            //kiểm tra va chạm
+            // check static block collision
         checkStaticBlockCollision();
 
-            // kiểm tra va chạm khung tường bên trái
+            // check frame collision
+            // left wall
 
         for (int i=0 ; i< b.length ; i++){
             if (b[i].x == PlayManager.left_x){
@@ -84,14 +88,14 @@ public class Mino {
             }
         }
 
-        // khung tường bên phải
+        // right wall
 
         for (int i=0 ; i< b.length ; i++){
             if (b[i].x + Block.SIZE == PlayManager.right_x){
                 rightCollision = true;
             }
         }
-        // khung tường đáy
+        // bottom
         for (int i=0 ; i< b.length ; i++){
             if (b[i].y  + Block.SIZE == PlayManager.bottom_y){
                 bottomCollision = true;
@@ -105,27 +109,28 @@ public class Mino {
         rightCollision =false;
         bottomCollision =false;
 
-        //kiểm tra va chạm
+        // check static block collision
         checkStaticBlockCollision();
 
-        // kiểm tra va chạm khung tường bên trái
+        // check frame collision
+        // left wall
 
         for (int i=0 ; i< b.length ; i++){
-            if (tempB[i].x < PlayManager.left_x){ // x bên trái lớn hơn temp .x
+            if (tempB[i].x < PlayManager.left_x){ // left x is greater than temp .x
                 leftCollision = true;
             }
         }
 
-        // kiểm tra va chạm khung tường bên phải
+        // right wall
 
         for (int i=0 ; i< b.length ; i++){
-            if (tempB[i].x + Block.SIZE > PlayManager.right_x){ // x bên phải nhỏ hơn temp.x
+            if (tempB[i].x + Block.SIZE > PlayManager.right_x){ // right x is smaller than temp .x
                 rightCollision = true;
             }
         }
-        // kiểm tra va chạm khung tường đáy
+        // bottom
         for (int i=0 ; i< b.length ; i++){
-            if (tempB[i].y  + Block.SIZE > PlayManager.bottom_y){ // y đáy nhỏ hơn temp .y
+            if (tempB[i].y  + Block.SIZE > PlayManager.bottom_y){ // bottom y is smaller than temp .y
                 bottomCollision = true;
             }
         }
@@ -135,7 +140,7 @@ public class Mino {
     private void checkStaticBlockCollision(){
 
         for (int i =0 ; i< PlayManager.staticBlocks.size() ;i++){
-            // lấy mỗi khối trục x và y
+            // get each blocks x and y
             int targetX = PlayManager.staticBlocks.get(i).x;
             int targetY = PlayManager.staticBlocks.get(i).y;
 
@@ -148,13 +153,12 @@ public class Mino {
             }
 
         }
-        // trái
+        // left
         for (int j =0 ; j<b.length ; j++){
             if(b[j].x - Block.SIZE ==  targetX && b[j].y == targetY){
                 leftCollision = true;
             }
         }
-        // phải
         for (int j =0 ; j<b.length ; j++){
             if(b[j].x + Block.SIZE ==  targetX && b[j].y == targetY){
                 rightCollision = true;
@@ -165,17 +169,19 @@ public class Mino {
     public void update(){
 
 
+
         if (deactivating ){
             deactivating();
         }
+        // lets control the mino
 
         if(KeyHandler.upPressed){
-            //xoay mino
+            // this is bit tricky because it does rotation
 
             switch (direction){
-                // nếu hướng hiện tại là 1 thì sẽ xoay theo thứ tự sau
+                // if current direction is 1 then this order below
                 case 1:
-                    getDirection2(); break; // mino quay mỗi lần phím w được nhấn
+                    getDirection2(); break; // mino rotates every times w key is pressed
                 case 2:
                     getDirection3();break;
                 case 3:
@@ -201,9 +207,9 @@ public class Mino {
                 b[2].y += Block.SIZE;
                 b[3].y += Block.SIZE;
 
-                // khi di chuyển xuống đặt lại bộ đếm thả tự động
+                // when move down reset the auto drop counter
             autoDropCounter =0;
-            // reset
+// reset
             KeyHandler.downPressed =false;
             }
                                     }
@@ -258,13 +264,13 @@ public class Mino {
     private void deactivating() {
 
         deactivateCounter ++;
-        // chờ 45 frame cho đến khi dừng hoạt động
+        // wait 45 frame until disActive
         if(deactivateCounter ==45){
 
             deactivateCounter =0;
-            checkMovementCollision(); // kiểm tra xem đáy có còn chạm không
+            checkMovementCollision(); // check if bottom is still hitting
 
-            // nếu đáy vẫn đập sau 45 khung hình, thì mino tắt
+            // if the bottom is still hitting after 45 frame , deactive the mino
             if(bottomCollision){
                 active = false;
             }

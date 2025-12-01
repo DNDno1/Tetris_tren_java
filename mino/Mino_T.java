@@ -27,7 +27,7 @@ public class Mino_T extends Mino{
     }
 
 
-    public void getDirection1(){ // hướng mặc định
+    public void getDirection1(){ // default direction
 
         //     o
         //  o  o  o

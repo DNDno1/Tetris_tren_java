@@ -13,7 +13,7 @@ public class Mino_L1 extends Mino{
         // o  B0
         // o  B2
         // o  o  B3
-        // sử dụng 4 blocks
+        // use 4 blocks
         b[0].x= x;
         b[0].y= y;
         b[1].x= b[0].x;
@@ -27,13 +27,13 @@ public class Mino_L1 extends Mino{
 
     }
 
-    public void getDirection1(){ // hướng mặc định
+    public void getDirection1(){ // default direction
 
         // o
         // o
         // o
         // o  o
-        // sử dụng 4 khối
+        // use 4 blocks
 
         tempB[0].x= b[0].x;
         tempB[0].y= b[0].y;
@@ -47,6 +47,7 @@ public class Mino_L1 extends Mino{
         updateXY(1);
 
     }public void getDirection2(){
+        //   center
         // b2  b0  b1
         // o   o   o
         // o  b3

@@ -13,6 +13,8 @@ public class Mino_Bar extends Mino{
     public void setXY(int x , int y){
 
 
+        //
+        //  o  o  o  o
 
         b[0].x= x;
         b[0].y= y;
@@ -26,7 +28,10 @@ public class Mino_Bar extends Mino{
     }
 
 
-    public void getDirection1(){ //hướng mặc định
+    public void getDirection1(){ // default direction
+
+        //
+        //  o  o  o  o
 
         tempB[0].x= b[0].x;
         tempB[0].y= b[0].y;
@@ -41,6 +46,10 @@ public class Mino_Bar extends Mino{
 
     }public void getDirection2(){
 
+        // o
+        // o
+        // o
+        // o
 
         tempB[0].x= b[0].x;
         tempB[0].y= b[0].y;
@@ -57,12 +66,12 @@ public class Mino_Bar extends Mino{
 
     }public void getDirection3(){
 
-//thanh này có 2 hướng nên chúng ta cần gọi lại hướng 1
+// this bar has 2 directions so we need can call direction 1 and 2 again
         getDirection1();
 
     }public void getDirection4(){
 
-//thanh này có 2 hướng nên chúng ta cần gọi lại hướng 2
+// this bar has 2 directions so we need can call direction 1 and 2 again
         getDirection2();
         
     }

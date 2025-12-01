@@ -26,7 +26,7 @@ public class Mino_Z2 extends Mino{
 
     }
 
-    public void getDirection1(){ // hướng mặc định
+    public void getDirection1(){ // default direction
 
         //  o
         //  o  o
@@ -44,7 +44,7 @@ public class Mino_Z2 extends Mino{
         updateXY(1);
 
     }
-    public void getDirection2(){ // hướng mặc định
+    public void getDirection2(){ // default direction
 
 
         //     o  o
