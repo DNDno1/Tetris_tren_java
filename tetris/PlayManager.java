@@ -17,7 +17,7 @@ import java.util.Random;
 public class PlayManager {
 
     // 25 *12
-    // 25 * 20
+    // 25 * 22
     final int WIDTH = 300;
     final int HEIGHT = 550;
 
@@ -41,13 +41,17 @@ public class PlayManager {
 
     // Các hiệu ứng
 
-    boolean effectsCounterOn;
+    boolean effectsCounterCOn;
+    boolean effectsCounterLOn;
 
-    int effectCounter;
+    int effectCounterC;
+    int effectCounterL;
     ArrayList<Integer> effectY = new ArrayList<>();
+    ArrayList<Integer> effectX = new ArrayList<>();
 
     int level = 1;
     int lines;
+    int column;
     int score;
 
 
@@ -123,14 +127,15 @@ public class PlayManager {
                 nextMino.setXY(NEXT_MINO_X, NEXT_MINO_Y);
                 // kiểm tra xem mino có không hoạt động không và kiểm tra xem 
                 // dòng có thể xóa được không
-                checkDelete();
+                checkDeleteLine();
+                checkDeleteColumn();
             } else {
                 currentMino.update();
             }
         }
     }
 
-    private void checkDelete() {
+    private void checkDeleteLine() {
 
         int x = left_x;
         int y = top_y;
@@ -155,10 +160,11 @@ public class PlayManager {
                 // dòng đã được lấp đầy và có thể xóa
                 if (blockCount == 12) {
 
-                    effectsCounterOn = true;
+                    effectsCounterLOn = true;
                     effectY.add(y);
+                    int n = staticBlocks.size() -1;
 
-                    for (int i = staticBlocks.size() - 1; i > -1; i--) {
+                    for (int i = n; i > -1; i--) {
                         // xóa tất cả blocks trong dòng y hiện tại
                         if (staticBlocks.get(i).y == y) {
                             staticBlocks.remove(i);
@@ -200,6 +206,80 @@ public class PlayManager {
             GamePanel.se.play(1,false);
             int singleLineScore = 10 * level;
             score+=singleLineScore * lineCount;
+        }
+    }
+    
+    private void checkDeleteColumn() {
+
+        int x = left_x;
+        int y = bottom_y - 5*Block.SIZE;
+        int blockCount = 0;
+        int ColumnCount =0;
+
+        // vì vậy số blocks tối đa là 5 nếu một cột có 5 blocks ta có thể xóa
+        // cột
+        while (x < right_x && y < bottom_y) {
+
+            for (Block block : PlayManager.staticBlocks) { // scanning
+                if (block.x == x && block.y == y) {
+                    // tăng số lượng
+                    blockCount++;
+
+                }
+            }
+
+            y += Block.SIZE;
+            if (y == bottom_y) {
+
+                // dòng đã được lấp đầy và có thể xóa
+                if (blockCount == 5) {
+
+                    effectsCounterCOn = true;
+                    effectX.add(x);
+                    int n = staticBlocks.size() -1;
+                    
+                    for (int i = n; i > -1; i--) {
+                        // xóa 5 blocks trong cột x hiện tại
+                        if (staticBlocks.get(i).x == x && staticBlocks.get(i).y >= y - 5*Block.SIZE) {
+                            staticBlocks.remove(i);
+                        }
+
+                    }
+                    ColumnCount++;
+                    column++;
+                    // để tăng cấp độ + tốc độ sau mỗi 10 dòng
+
+                    if(column % 20 == 0 &&  dropInterval >1){
+                        level++;
+                        if(dropInterval >10){
+                            dropInterval -=10;
+                        }
+                        else {
+                            dropInterval -=1;
+                        }
+                    }
+
+                  // Một dòng đã bị xóa nên cần phải di chuyển xuống các blocks
+                    for (Block staticBlock : staticBlocks) {
+
+                        // nếu một khối nằm trên y hiện tại, hãy di chuyển nó 
+                        // xuống theo kích thước khối
+
+                        if (staticBlock.y < y && staticBlock.x == x) {
+                            staticBlock.y += 5*Block.SIZE;
+                        }
+                    }
+                }
+                blockCount = 0; // reset khi x đạt đến x bên phải vì nó đi 
+                                //đến hàng tiếp theo
+                y = bottom_y - 5*Block.SIZE;
+                x += Block.SIZE;
+            }
+        }
+        if(ColumnCount>0){
+            GamePanel.se.play(1,false);
+            int singleLineScore = 5 * level;
+            score+=singleLineScore * ColumnCount;
         }
     }
 
@@ -246,16 +326,30 @@ public class PlayManager {
         }
 
         // Vẽ hiệu ứng nào (xóa dòng, tăng điểm)
-        if (effectsCounterOn) {
-            effectCounter++;
+        if (effectsCounterLOn) {
+            effectCounterL++;
             g2.setColor(Color.RED);
             for (Integer integer : effectY) {
                 g2.fillRect(left_x, integer, WIDTH, Block.SIZE);
             }
-            if (effectCounter == 10) {
-                effectsCounterOn = false;
-                effectCounter = 0;
+            if (effectCounterL == 10) {
+                effectsCounterLOn = false;
+                effectCounterL = 0;
                 effectY.clear();
+            }
+        }
+        
+        // Vẽ hiệu ứng nào (xóa cột, tăng điểm)
+        if (effectsCounterCOn) {
+            effectCounterC++;
+            g2.setColor(Color.RED);
+            for (Integer integer : effectX) {
+                g2.fillRect(integer, bottom_y-5*Block.SIZE, Block.SIZE, 5*Block.SIZE);
+            }
+            if (effectCounterC == 10) {
+                effectsCounterCOn = false;
+                effectCounterC = 0;
+                effectX.clear();
             }
         }
 
@@ -271,7 +365,7 @@ public class PlayManager {
         } else {
             g2.setColor(Color.CYAN);
             g2.setFont(new Font("SansSerif", Font.BOLD, 26));
-            g2.drawString("Press S to use slowdown!", 50, 200);
+            g2.drawString("Press Z to use slowdown!", 50, 200);
         }
 
         // Vẽ tạm dừng hoặc kết thúc trò chơi
@@ -296,3 +390,4 @@ public class PlayManager {
 
     }
 }
+
